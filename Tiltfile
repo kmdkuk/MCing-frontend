@@ -1,5 +1,5 @@
 # Dockerイメージをビルド
-docker_build('mcing-frontend', './')
+docker_build('mcing-frontend', './mcing-frontend')
 
 # Kubernetesマニフェストを適用
 k8s_yaml('k8s/deployment.yaml')
