@@ -1,0 +1,11 @@
+apiVersion: ctlptl.dev/v1alpha1
+kind: Registry
+name: mcing-frontend-registry
+port: 5151
+---
+apiVersion: ctlptl.dev/v1alpha1
+kind: Cluster
+name: kind-mcing-frontend-dev
+product: kind
+kubernetesVersion: v1.32.3 # renovate: kindest/node
+registry: mcing-frontend-registry
