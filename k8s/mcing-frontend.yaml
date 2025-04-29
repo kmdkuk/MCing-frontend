@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcing-frontend
+  labels:
+    app: mcing-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mcing-frontend
+  template:
+    metadata:
+      labels:
+        app: mcing-frontend
+    spec:
+      containers:
+        - name: mcing-frontend
+          image: mcing-frontend:latest
+          ports:
+            - containerPort: 80

@@ -5,7 +5,17 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const [pods, setPods] = useState<any[]>([]);
 
+  const fetchPods = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/pods');
+      const data = await response.json();
+      setPods(data.items || []);
+    } catch (error) {
+      console.error('Error fetching pods:', error);
+    }
+  };
   return (
     <>
       <div>
@@ -18,9 +28,17 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => {
+          setCount((count) => count + 1)
+        }}>
           count is {count}
         </button>
+        <button onClick={fetchPods}>Fetch Pods</button>
+        <ul>
+          {pods.map((pod) => (
+            <li key={pod.metadata.name}>{pod.metadata.name}</li>
+          ))}
+        </ul>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>

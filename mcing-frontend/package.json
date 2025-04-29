@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate:api": "npx openapi-typescript src/apis/openapi-v3-mcing.json --output src/apis/schema.gen.ts"
   },
   "dependencies": {
+    "@kubernetes/client-node": "^1.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
