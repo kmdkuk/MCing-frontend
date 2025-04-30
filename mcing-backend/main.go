@@ -8,11 +8,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-type Pod struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
-}
-
 func main() {
 	http.HandleFunc("/pods", func(w http.ResponseWriter, r *http.Request) {
 		pods := corev1.PodList{
