@@ -34,3 +34,27 @@ spec:
       port: 8080 # Serviceが公開するポート
       targetPort: 80 # Pod内のコンテナがリッスンしているポート
   type: ClusterIP # 外部に公開する場合はLoadBalancer、内部のみの場合はClusterIP
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: default
+  name: pod-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
