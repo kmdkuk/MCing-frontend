@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"os"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
@@ -21,6 +22,19 @@ func main() {
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
+	}
+
+	// Dynamicクライアントの初期化
+	dynamicClient, err := dynamic.NewForConfig(config)
+	if err != nil {
+		log.Fatalf("Error creating dynamic client: %v", err)
+	}
+
+	// カスタムリソースのGroupVersionResourceを定義
+	minecraftGVR := schema.GroupVersionResource{
+		Group:    "mcing.kmdkuk.com",
+		Version:  "v1alpha1",
+		Resource: "minecrafts",
 	}
 
 	// HTTPハンドラー
@@ -39,14 +53,20 @@ func main() {
 		json.NewEncoder(w).Encode(pods)
 	})
 
+	http.HandleFunc("/minecrafts", func(w http.ResponseWriter, r *http.Request) {
+		// デフォルトのNamespaceのカスタムリソースを取得
+		minecrafts, err := dynamicClient.Resource(minecraftGVR).Namespace("default").List(r.Context(), metav1.ListOptions{})
+		if err != nil {
+			http.Error(w, "Failed to fetch minecrafts", http.StatusInternalServerError)
+			log.Printf("Error fetching minecrafts: %v", err)
+			return
+		}
+		// レスポンスをJSONで返す
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(minecrafts)
+	})
+
 	log.Println("Starting server on :80")
 	log.Fatal(http.ListenAndServe(":80", nil))
-}
-
-// ホームディレクトリを取得
-func homeDir() string {
-	if h := os.Getenv("HOME"); h != "" {
-		return h
-	}
-	return os.Getenv("USERPROFILE") // Windowsの場合
 }

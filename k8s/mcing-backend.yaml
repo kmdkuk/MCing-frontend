@@ -58,3 +58,28 @@ roleRef:
   kind: Role
   name: pod-reader
   apiGroup: rbac.authorization.k8s.io
+---
+# ClusterRoleの定義
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: minecraft-reader
+rules:
+  - apiGroups: ["mcing.kmdkuk.com"] # カスタムリソースのAPIグループ
+    resources: ["minecrafts"] # リソース名
+    verbs: ["get", "list", "watch"] # 許可する操作
+
+---
+# ClusterRoleBindingの定義
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: minecraft-reader-binding
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: minecraft-reader
+  apiGroup: rbac.authorization.k8s.io

@@ -8,6 +8,10 @@ start:
 install-mcing:
 	kustomize build ./MCing | kubectl apply --server-side -f -
 
+.PHONY: deploy-minecraft
+deploy-minecraft:
+	kustomize build ./k8s/minecraft | kubectl apply -f -
+
 .PHONY: fetch-schema
 fetch-schema:
 	kubectl get --raw /openapi/v3/apis/mcing.kmdkuk.com/v1alpha1 > ./mcing-frontend/src/apis/openapi-v3-mcing.json

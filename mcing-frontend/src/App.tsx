@@ -6,6 +6,7 @@ import './App.css'
 function App() {
   const [count, setCount] = useState(0)
   const [pods, setPods] = useState<any[]>([]);
+  const [minecrafts, setMinecrafts] = useState<any[]>([]);
 
   const fetchPods = async () => {
     try {
@@ -14,6 +15,17 @@ function App() {
       setPods(data.items || []);
     } catch (error) {
       console.error('Error fetching pods:', error);
+    }
+  };
+
+  const fetchMinecrafts = async () => {
+    try {
+      const response = await fetch('http://localhost:8081/minecrafts');
+      const data = await response.json();
+      setMinecrafts(data.items || []);
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching minecrafts:', error);
     }
   };
   return (
@@ -28,17 +40,34 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => {
-          setCount((count) => count + 1)
-        }}>
-          count is {count}
-        </button>
-        <button onClick={fetchPods}>Fetch Pods</button>
-        <ul>
-          {pods.map((pod) => (
-            <li key={pod.metadata.name}>{pod.metadata.name}</li>
-          ))}
-        </ul>
+        <div>
+          <button onClick={() => setCount((count) => count + 1)}>
+            count is {count}
+          </button>
+          <button onClick={fetchPods}>Fetch Pods</button>
+          <button onClick={fetchMinecrafts}>Fetch Minecrafts</button>
+        </div>
+
+        <div>
+          <h2>Pods</h2>
+          <ul>
+            {pods.map((pod) => (
+              <li key={pod.metadata.name}>{pod.metadata.namespace + "/" + pod.metadata.name}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2>Minecrafts</h2>
+          <ul>
+            {minecrafts.map((minecraft) => (
+              <li key={minecraft.metadata.name}>
+                {minecraft.metadata.namespace + "/" + minecraft.metadata.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
         </p>
