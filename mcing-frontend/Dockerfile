@@ -1,4 +1,4 @@
-FROM node:22.15.0-slim as build
+FROM node:22.16.0-slim as build
 LABEL org.opencontainers.image.source="https://github.com/kmdkuk/MCing-frontend"
 
 WORKDIR /app
